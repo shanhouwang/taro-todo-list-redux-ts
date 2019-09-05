@@ -18,33 +18,37 @@ page {
     font-style: italic;
   }
   &_input {
-    margin: 15px;
-    padding: 15px;
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
+    padding: 20px;
     width: auto;
     text-align: left;
     height: 100%;
     background-color: #f8f8f8;
-    font-size: 50px;
+    font-size: 40px;
     border: 0.5px solid #999;
+    border-radius: 10px;
   }
   &_tip {
+    margin-left: 37px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-size: 40px;
     display: flex;
     flex-direction: row;
     padding-left: 15px;
-    .taro-checkbox_checked  {
-      vertical-align: middle;
-      top:0;
-      background: red;
-    }
+    color: #333;
+    font-style: unset;
   }
   &_list {
     width: auto;
     text-align: left;
     margin-top: 15px;
-    margin-left: 15px;
-    margin-right: 15px;
+    margin-left: 50px;
+    margin-right: 50px;
     background-color: #f8f8f8;
-    font-size: 50px;
+    font-size: 40px;
     border: 1px solid #666;
     display: flex;
     flex-direction: column;
@@ -66,6 +70,7 @@ page {
         margin-left: 15px;
         color: #333;
         text-align: left;
+        line-height: 65px;
       }
       &_txt_line {
         flex: 1;
@@ -73,15 +78,17 @@ page {
         color: #999;
         text-decoration: line-through;
         text-align: left;
+        line-height: 65px;
       }
       &_input {
-        margin: 15px;
-        padding: 15px;
+        padding-left: 15px;
+        padding-top: 5px;
+        padding-bottom: 5px;
         width: auto;
         text-align: left;
-        height: auto;
-        background-color: #f8f8f8;
-        border: 0.5px solid #999;
+        height: 100%;
+        background-color: #fff;
+        border: 1px solid #e8e8e8;
       }
       &_img_close {
         padding: 20px;
@@ -92,6 +99,7 @@ page {
     }
   }
   &_bottom {
+    margin: 38px;
     padding: 15px;
     text-align: left;
     font-size: 25px;

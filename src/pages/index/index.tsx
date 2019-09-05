@@ -183,25 +183,27 @@ class Index extends Component {
           type='text'
           className='index_input'
           value={this.state.inputContent}
-          placeholder='What needs to be done?'
+          placeholder='需要做什么？'
           focus
           onInput={this.onInputChange}
           onConfirm={this.saveNewTodo.bind(this)}
         />
         <View className='index_tip'>
           <Checkbox
+            className='index_tip_cb'
             value='all'
             checked={isAllChecked}
             onClick={clickAllCheckbox}
-          />
-          <Text onClick={clickAllCheckbox}>Mark all as complete</Text>
+          >
+            标记为完成
+          </Checkbox>
         </View>
         <View className='index_list' style={{ display: todos.length == 0 ? 'none' : 'flex' }} >
           {todosJsx}
         </View>
         <View className='index_bottom'>
           <Button onClick={clearTodos}>
-            清除（{checkedCount}）个完成选项
+            清除  {checkedCount}  个完成选项
           </Button>
         </View>
       </View>
