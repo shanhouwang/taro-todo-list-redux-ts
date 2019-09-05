@@ -15,11 +15,17 @@ const INITIAL_STATE = {
 const isWx = process.env.TARO_ENV === 'weapp'
 
 function getTodosFromLocal(): Todo[] {
-  let data = []
+  let data: Todo[] = []
   if (isWx) {
     let wxData = wx.getStorageSync('todos')
     // 这个判断很重要
-    data = wxData === null || wxData === undefined || wxData === '' ? [] : wxData
+    if (wxData !== '' && wxData !== null && wxData !== undefined) {
+      let tempWxData = wxData as Todo[]
+      tempWxData.map((item) => {
+        item.showInput = false
+      })
+      data = tempWxData
+    }
   } else {
     let dataNotWx = localStorage.getItem('todos')
     data = dataNotWx === null || dataNotWx === '' ? [] : JSON.parse(dataNotWx)

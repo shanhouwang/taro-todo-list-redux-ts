@@ -159,6 +159,7 @@ class Index extends Component {
         >{item.txt}</Text>
         <Input
           type='text'
+          focus={item.showInput}
           value={item.txt}
           className='index_list_item_input'
           onConfirm={(e) => { this.editTodo(e, index) }}
