@@ -1,10 +1,10 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux'
 import * as Actions from '../constants/constants'
 
 /**
  * 初始化数据
  */
-const local: Todo[] = getTodosFromLocal();
+const local: Todo[] = getTodosFromLocal()
 
 const INITIAL_STATE = {
   todos: local,
@@ -12,17 +12,17 @@ const INITIAL_STATE = {
   checkedCount: setCheckedCount(local)
 }
 
-const isWx = process.env.TARO_ENV === 'weapp';
+const isWx = process.env.TARO_ENV === 'weapp'
 
 function getTodosFromLocal(): Todo[] {
-  let data = [];
+  let data = []
   if (isWx) {
-    let wxData = wx.getStorageSync('todos');
+    let wxData = wx.getStorageSync('todos')
     // 这个判断很重要
-    data = wxData === null || wxData === undefined || wxData === '' ? [] : wxData;
+    data = wxData === null || wxData === undefined || wxData === '' ? [] : wxData
   } else {
-    let dataNotWx = localStorage.getItem('todos');
-    data = dataNotWx === null || dataNotWx === '' ? [] : JSON.parse(dataNotWx);
+    let dataNotWx = localStorage.getItem('todos')
+    data = dataNotWx === null || dataNotWx === '' ? [] : JSON.parse(dataNotWx)
   }
   return data
 }
@@ -45,7 +45,7 @@ function setAllChecked(data: Todo[]) {
  * 底部选择数量更新
  */
 function setCheckedCount(data: Todo[]) {
-  return data.filter((item) => { return item.checked }).length;
+  return data.filter((item) => { return item.checked }).length
 }
 
 /**
@@ -69,9 +69,9 @@ function manageTodos(state = INITIAL_STATE, action) {
   console.log(action)
   switch (action.type) {
     case Actions.ADD:
-      let info: Todo = { txt: action.text, checked: false, showClose: false, showInput: false };
-      let todos = state.todos.concat(info);
-      saveDataToLocal(todos);
+      let info: Todo = { txt: action.text, checked: false, showClose: false, showInput: false }
+      let todos = state.todos.concat(info)
+      saveDataToLocal(todos)
       return {
         ...state,
         todos: todos,
@@ -80,13 +80,13 @@ function manageTodos(state = INITIAL_STATE, action) {
     case Actions.DELETE_BY_INDEX:
       // splice 并不会引发重新render
       // state.todos.splice(action.index, 1);
-      let dataByDelete: Todo[] = [];
+      let dataByDelete: Todo[] = []
       state.todos.map((item, index) => {
         if (action.index !== index) {
           dataByDelete.push(item)
         }
       })
-      saveDataToLocal(dataByDelete);
+      saveDataToLocal(dataByDelete)
       return {
         ...state,
         todos: dataByDelete,
@@ -94,7 +94,7 @@ function manageTodos(state = INITIAL_STATE, action) {
         checkedCount: setCheckedCount(dataByDelete)
       }
     case Actions.ON_MOUSE_OVER:
-      let todosOfMouseOver: Todo[] = [];
+      let todosOfMouseOver: Todo[] = []
       state.todos.map((item, index) => {
         if (action.index == index) {
           item.showClose = true
@@ -108,13 +108,13 @@ function manageTodos(state = INITIAL_STATE, action) {
         todos: todosOfMouseOver
       }
     case Actions.CLICK_TODOS_BY_INDEX:
-      let newTodos: Todo[] = [];
+      let newTodos: Todo[] = []
       state.todos.map((item, index) => {
         if (action.index == index) {
           item.checked = !item.checked
         }
         newTodos.push(item)
-      });
+      })
       saveDataToLocal(newTodos)
       return {
         ...state,
@@ -124,7 +124,7 @@ function manageTodos(state = INITIAL_STATE, action) {
       }
     case Actions.CLICK_ALL_CHECKBOX:
       let checked = !state.isAllChecked
-      let dataOfAll: Todo[] = [...state.todos];
+      let dataOfAll: Todo[] = [...state.todos]
       for (let i = 0; i < dataOfAll.length; i++) {
         dataOfAll[i].checked = checked
       }
@@ -136,7 +136,7 @@ function manageTodos(state = INITIAL_STATE, action) {
         checkedCount: checked ? dataOfAll.length : 0
       }
     case Actions.CLEAR_TODOS:
-      let data: Todo[] = [];
+      let data: Todo[] = []
       for (let i = 0; i < state.todos.length; i++) {
         if (!state.todos[i].checked) {
           data.push(state.todos[i])
@@ -151,8 +151,7 @@ function manageTodos(state = INITIAL_STATE, action) {
       }
     case Actions.ON_LONG_PRESS_BY_INDEX:
       // https://github.com/NervJS/taro/issues/2967
-      let myState = JSON.parse(JSON.stringify(state))
-      let dataOfLongPress: Todo[] = myState.todos;
+      let dataOfLongPress: Todo[] = JSON.parse(JSON.stringify(state.todos))
       dataOfLongPress.map((item, index) => {
         if (index == action.index) {
           item.showInput = !item.showInput
@@ -163,8 +162,21 @@ function manageTodos(state = INITIAL_STATE, action) {
         ...state,
         todos: dataOfLongPress
       }
+    case Actions.EDIT_TODO_BY_INDEX:
+      let dataOfEdit: Todo[] = JSON.parse(JSON.stringify(state.todos))
+      dataOfEdit.map((item, index) => {
+        if (index == action.index) {
+          item.txt = action.text
+          item.showInput = false
+        }
+      })
+      saveDataToLocal(dataOfEdit)
+      return {
+        ...state,
+        todos: dataOfEdit
+      }
     default:
-      return state;
+      return state
   }
 }
 

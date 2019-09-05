@@ -17,7 +17,7 @@ import './index.scss'
 // ref: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/20796
 //
 // #endregion
- type PageStateProps = {
+type PageStateProps = {
   todos: Todo[],
   isAllChecked: boolean,
   checkedCount: boolean
@@ -31,6 +31,7 @@ type PageDispatchProps = {
   clickAllCheckbox: () => void
   clearTodos: () => void
   onLongPressByIndex: (index: number) => void
+  editTodoByIndex: (text: string, index: number) => void
 }
 
 type PageOwnProps = {}
@@ -64,6 +65,8 @@ const isWx = process.env.TARO_ENV == 'weapp'
     dispatch(actions.clearTodos())
   }, onLongPressByIndex(index) {
     dispatch(actions.onLongPressByIndex(index))
+  }, editTodoByIndex(text, index) {
+    dispatch(actions.editTodoByIndex(text, index))
   }
 }))
 class Index extends Component {
@@ -115,6 +118,12 @@ class Index extends Component {
     })
   }
 
+  editTodo(e, index: number) {
+    let { editTodoByIndex } = this.props
+    if (!e.detail.value) return
+    editTodoByIndex(e.detail.value, index)
+  }
+
   onInputChange = (e) => {
     this.setState({
       inputContent: e.detail.value
@@ -122,9 +131,7 @@ class Index extends Component {
   }
 
   render() {
-
     console.log('>>>>>render<<<<<')
-
     let {
       todos
       , isAllChecked
@@ -137,7 +144,7 @@ class Index extends Component {
       , onLongPressByIndex } = this.props
 
     const todosJsx = todos.map((item, index) => {
-      return (<View key={index} className='index_list_item' onMouseOver={() => { onMouseOver(index) }}>
+      return (<View key={item.txt + index} className='index_list_item' onMouseOver={() => { onMouseOver(index) }}>
         <Checkbox
           value={item.txt}
           checked={item.checked}
@@ -148,12 +155,15 @@ class Index extends Component {
           onClick={() => { clickTodosByIndex(index) }}
           onLongClick={() => { onLongPressByIndex(index) }}
           onLongPress={() => { onLongPressByIndex(index) }}
+          style={{ display: item.showInput ? 'none' : 'flex' }}
         >{item.txt}</Text>
         <Input
           type='text'
           value={item.txt}
           className='index_list_item_input'
+          onConfirm={(e) => { this.editTodo(e, index) }}
           style={{ display: item.showInput ? 'flex' : 'none' }}
+          onBlur={(e) => { this.editTodo(e, index) }}
         />
         <Image
           className='index_list_item_img_close'
@@ -173,7 +183,7 @@ class Index extends Component {
           className='index_input'
           value={this.state.inputContent}
           placeholder='What needs to be done?'
-          autoFocus
+          focus
           onInput={this.onInputChange}
           onConfirm={this.saveNewTodo.bind(this)}
         />
